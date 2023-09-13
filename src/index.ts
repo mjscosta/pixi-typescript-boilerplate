@@ -1,4 +1,4 @@
-import { Application, Loader, Texture, AnimatedSprite } from "pixi.js";
+import { Application, Loader, Assets, Texture, AnimatedSprite } from "pixi.js";
 import { getSpine } from "./spine-example";
 import "./style.css";
 
@@ -12,13 +12,12 @@ console.log(`Welcome from pixi-typescript-boilerplate ${VERSION}`);
 const app = new Application({
     backgroundColor: 0xd3d3d3,
     width: gameWidth,
-    height: gameHeight,
+    height: gameHeight
 });
 
 window.onload = async (): Promise<void> => {
-    await loadGameAssets();
-
-    document.body.appendChild(app.view);
+    await loadGameAssets()
+    document.body.appendChild(app.view as HTMLCanvasElement);
 
     resizeCanvas();
 
@@ -26,7 +25,7 @@ window.onload = async (): Promise<void> => {
     birdFromSprite.anchor.set(0.5, 0.5);
     birdFromSprite.position.set(gameWidth / 2, 530);
 
-    const spineExample = getSpine();
+    const spineExample = await getSpine();
     spineExample.position.y = 580;
 
     app.stage.addChild(birdFromSprite);
@@ -34,22 +33,27 @@ window.onload = async (): Promise<void> => {
     app.stage.interactive = true;
 };
 
+
+
 async function loadGameAssets(): Promise<void> {
-    return new Promise((res, rej) => {
-        const loader = Loader.shared;
-        loader.add("rabbit", "./assets/simpleSpriteSheet.json");
-        loader.add("pixie", "./assets/spine-assets/pixie.json");
+    await Assets.load("./assets/simpleSpriteSheet.json");
 
-        loader.onComplete.once(() => {
-            res();
-        });
 
-        loader.onError.once(() => {
-            rej();
-        });
+    // return new Promise((res, rej) => {
+    //     const loader = Loader.shared;
+    //     loader.add("rabbit", "./assets/simpleSpriteSheet.json");
+    //     loader.add("pixie", "./assets/spine-assets/pixie.json");
 
-        loader.load();
-    });
+    //     loader.onComplete.once(() => {
+    //         res();
+    //     });
+
+    //     loader.onError.once(() => {
+    //         rej();
+    //     });
+
+    //     loader.load();
+    // });
 }
 
 function resizeCanvas(): void {
